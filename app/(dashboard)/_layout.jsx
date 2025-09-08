@@ -4,7 +4,7 @@ import { Colors } from "../../constants/Colors"
 import { Ionicons } from '@expo/vector-icons';
 import UserOnly from "../../components/auth/UserOnly";
 
-export default function DashboardLayout() {
+function DashboardLayout() {
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme] ?? Colors.light
 
@@ -34,3 +34,4 @@ export default function DashboardLayout() {
     </UserOnly>
   )
 }
+export default DashboardLayout
