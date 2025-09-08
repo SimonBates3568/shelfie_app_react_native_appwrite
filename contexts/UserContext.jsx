@@ -10,10 +10,15 @@ export function UserProvider({ children }) {
 
   async function login(email, password) {
     try {
-      await account.createEmailPasswordSession(email, password)
+      // Always delete the current session before logging in
+      try {
+        await account.deleteSession({ sessionId: 'current' })
+      } catch (e) {
+        // Ignore error if no session exists
+      }
+      await account.createEmailPasswordSession({ email, password })
       const response = await account.get()
       setUser(response)
-
     } catch (error) {
       throw Error(error.message)
     }
@@ -29,7 +34,7 @@ export function UserProvider({ children }) {
   }
 
   async function logout() {
-    await account.deleteSession("current")
+    await account.deleteSession({ sessionId: "current" })
     setUser(null)
   }
 

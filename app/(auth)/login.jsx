@@ -1,5 +1,5 @@
 import { StyleSheet, Text, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
 
@@ -10,18 +10,20 @@ import ThemedButton from '../../components/ThemedButton'
 import ThemedTextInput from "../../components/ThemedTextInput"
 import { Colors } from '../../constants/Colors'
 
+
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(null)
 
   const { user, login } = useUser()
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setError(null)
     try {
       await login(email, password)
-      console.log('current user is: ', user)
+      router.replace('/(dashboard)/profile');
     } catch (error) {
       setError(error.message)
     }
@@ -68,7 +70,7 @@ const Login = () => {
             Register instead
           </ThemedText>
         </Link>
-
+      
       </ThemedView>
     </TouchableWithoutFeedback>
   )
