@@ -65,14 +65,22 @@ export function BoooksProvider({ children }){
             }
      }
 
-        useEffect(() => {
-            if(user){
-                fetchBooks()
-            } else {
-                setBooks([])
-            }
-        }, [user])
+    useEffect(() => {
+            let intervalId;
 
+            if (user) {
+            fetchBooks();
+            intervalId = setInterval(() => {
+                fetchBooks();
+            }, 2000); // fetch every 2 seconds
+            } else {
+            setBooks([]);
+            }
+
+            return () => {
+            if (intervalId) clearInterval(intervalId);
+            };
+        }, [user]);
      return (
             <BooksContext.Provider value={{ books, fetchBooks, fetchBookById, createBook, deleteBook }}>
                 {children}   
