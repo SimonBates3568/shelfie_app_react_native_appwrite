@@ -1,7 +1,7 @@
-import { createContext, useState } from "react";
-import { databases } from "../lib/appwrite";
-import { useUser } from "../hooks/useUser";
-import { Permission, Role, ID } from "react-native-appwrite";
+import { createContext, useEffect, useState } from "react"
+import { databases, client } from "../lib/appwrite"
+import { ID, Permission, Query, Role } from "react-native-appwrite"
+import { useUser } from "../hooks/useUser"
 
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID || ""
 const COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID || ""
@@ -12,20 +12,35 @@ export function BoooksProvider({ children }){
     const [books, setBooks ] = useState([])
     const { user } = useUser()
 
-    async function fetchBooks(){
-            try {
+    //fetch all books for a user
+   async function fetchBooks() {
+    try {
+      const response = await databases.listDocuments(
+        DATABASE_ID, 
+        COLLECTION_ID,
+        [
+          Query.equal('userId', user.$id)
+        ]
+      )
 
-            } catch(error){
-                console.log(error.message)
-            }
+      setBooks(response.documents)
+      console.log(response.documents)
+    } catch (error) {
+      console.error(error.message)
     }
-     async function fetchBookById(){
-         try {
+  }
 
-            } catch(error){
-                console.log(error.message)
+    //fetch a book by id
+     async function fetchBookById(id){
+         try {
+             const response = await databases.getDocument(DATABASE_ID, COLLECTION_ID, id);
+             return response;
+         } catch(error){
+             console.log(error.message)
             }
      }
+
+     //create a new book
      async function createBook(data){
             try {
                 const newBook = await databases.createDocument(DATABASE_ID, 
@@ -41,6 +56,7 @@ export function BoooksProvider({ children }){
                 console.log(error.message)
             }
      }
+        //delete a book by id
        async function deleteBook(id){
             try {
 
@@ -48,6 +64,15 @@ export function BoooksProvider({ children }){
                 console.log(error.message)
             }
      }
+
+        useEffect(() => {
+            if(user){
+                fetchBooks()
+            } else {
+                setBooks([])
+            }
+        }, [user])
+
      return (
             <BooksContext.Provider value={{ books, fetchBooks, fetchBookById, createBook, deleteBook }}>
                 {children}   
