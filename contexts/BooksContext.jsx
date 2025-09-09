@@ -33,7 +33,11 @@ export function BoooksProvider({ children }){
     //fetch a book by id
      async function fetchBookById(id){
          try {
-             const response = await databases.getDocument(DATABASE_ID, COLLECTION_ID, id);
+             const response = await databases.getDocument(
+                DATABASE_ID,
+                 COLLECTION_ID,
+                  id
+                );
              return response;
          } catch(error){
              console.log(error.message)
@@ -57,15 +61,19 @@ export function BoooksProvider({ children }){
             }
      }
         //delete a book by id
-       async function deleteBook(id){
+        async function deleteBook(id) {
             try {
-
-            } catch(error){
-                console.log(error.message)
+            await databases.deleteDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                id,
+            )
+            } catch (error) {
+            console.log(error.message)
             }
-     }
+        }
 
-    useEffect(() => {
+        useEffect(() => {
             let intervalId;
 
             if (user) {
@@ -81,6 +89,7 @@ export function BoooksProvider({ children }){
             if (intervalId) clearInterval(intervalId);
             };
         }, [user]);
+
      return (
             <BooksContext.Provider value={{ books, fetchBooks, fetchBookById, createBook, deleteBook }}>
                 {children}   
