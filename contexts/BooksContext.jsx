@@ -47,7 +47,8 @@ export function BoooksProvider({ children }){
      //create a new book
      async function createBook(data){
             try {
-                const newBook = await databases.createDocument(DATABASE_ID, 
+                const newBook = await databases.createDocument(
+                    DATABASE_ID, 
                     COLLECTION_ID,
                      ID.unique(),
                       {...data, userId:user.$id },
